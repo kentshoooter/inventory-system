@@ -1,0 +1,42 @@
+using System;
+using System.Security.Cryptography;
+using System.Text;
+
+namespace InventoryManagementSystem
+{
+    public static class UserManager
+    {
+        private const string PasswordSalt = "mysecretkey";
+
+        public static bool AuthenticateUser(string username, string password)
+        {
+            string savedUsername = "user";
+            string savedPassword = GetEncryptedPassword("password");
+
+            return username == savedUsername && password == savedPassword;
+        }
+
+        public static void SaveUser(string username, string password)
+        {
+            // Here you can add code to save the username and password
+            // to a secure storage location (such as a database or encrypted file)
+        }
+
+        private static string GetEncryptedPassword(string password)
+        {
+            using (SHA256 sha256 = SHA256.Create())
+            {
+                byte[] saltBytes = Encoding.UTF8.GetBytes(PasswordSalt);
+                byte[] passwordBytes = Encoding.UTF8.GetBytes(password);
+
+                byte[] saltedPasswordBytes = new byte[saltBytes.Length + passwordBytes.Length];
+                Array.Copy(saltBytes, saltedPasswordBytes, saltBytes.Length);
+                Array.Copy(passwordBytes, 0, saltedPasswordBytes, saltBytes.Length, passwordBytes.Length);
+
+                byte[] encryptedPasswordBytes = sha256.ComputeHash(saltedPasswordBytes);
+
+                return Convert.ToBase64String(encryptedPasswordBytes);
+            }
+        }
+    }
+}
