@@ -1,0 +1,113 @@
+using System;
+using System.Windows.Forms;
+
+namespace InventoryManagementSystem
+{
+    public partial class SignIn : Form
+    {
+        public SignIn()
+        {
+            InitializeComponent();
+        }
+
+        private void close_Click(object sender, EventArgs e)
+        {
+            Application.Exit();
+        }
+
+        private void login_label_Click(object sender, EventArgs e)
+        {
+            RegisterForm regform = new RegisterForm();
+            regform.Show();
+
+            this.Hide();
+        }
+
+        private void login_showPass_CheckChanged(object sender, EventArgs e)
+        {
+            login_password.PasswordChar = login_showPass.Checked ? '\0' : '*';
+        }
+
+        public bool checkConnection()
+        {
+            // Here you can add code to check if the connection to the database is successful
+            // For example, you can use the `SqlConnection.State` property to check if the connection is open
+            // or you can use the `SqlConnection.Open()` method to open the connection and catch any exceptions
+            // that might be thrown if the connection fails
+            return true;
+        }
+
+        private void login_btn_click(object sender, EventArgs e)
+        {
+            if (checkConnection())
+            {
+                try
+                {
+                    // Here you can add code to authenticate the user using the `UserManager.AuthenticateUser()` method
+                    // or any other authentication method you prefer
+                    string username = txtUsername.Text;
+                    string password = txtPassword.Text;
+
+                    bool isAuthenticated = UserManager.AuthenticateUser(username, password);
+
+                    if (isAuthenticated)
+                    {
+                        MessageBox.Show("Sign in successful!");
+                        // Here you can navigate to another form or perform other actions
+                    }
+                    else
+                    {
+                        MessageBox.Show("Invalid username or password. Please try again.");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Connection failed:" + ex, "Error Message", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+        }
+    }
+}
+
+using System;
+using System.Security.Cryptography;
+using System.Text;
+
+namespace InventoryManagementSystem
+{
+    public static class UserManager
+    {
+        private const string PasswordSalt = "mysecretkey";
+
+        public static bool AuthenticateUser(string username, string password)
+        {
+            string savedUsername = "user";
+            string savedPassword = GetEncryptedPassword("password");
+
+            return username == savedUsername && password == savedPassword;
+        }
+
+        public static void SaveUser(string username, string password)
+        {
+            // Here you can add code to save the username and password
+            // to a secure storage location (such as a database or encrypted file)
+        }
+
+        private static string GetEncryptedPassword(string password)
+        {
+            using (SHA256 sha256 = SHA256.Create())
+            {
+                byte[] saltBytes = Encoding.UTF8.GetBytes(PasswordSalt);
+                byte[] passwordBytes = Encoding.UTF8.GetBytes(password);
+
+                byte[] saltedPasswordBytes = new byte[saltBytes.Length + passwordBytes.Length];
+                Array.Copy(saltBytes, saltedPasswordBytes, saltBytes.Length);
+                Array.Copy(passwordBytes, 0, saltedPasswordBytes, saltBytes.Length, passwordBytes.Length);
+
+                byte[] encryptedPasswordBytes = sha256.ComputeHash(saltedPasswordBytes);
+
+                return Convert.ToBase64String(encryptedPasswordBytes);
+            }
+        }
+    }
+}
