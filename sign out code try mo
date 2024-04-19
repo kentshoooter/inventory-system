@@ -1,0 +1,29 @@
+using System;
+using System.Windows.Forms;
+
+namespace InventoryManagementSystem
+{
+    public partial class Dashboard : Form
+    {
+        public Dashboard()
+        {
+            InitializeComponent();
+        }
+
+        private void SignOut_Click(object sender, EventArgs e)
+        {
+            SignOut();
+        }
+
+        private void SignOut()
+        {
+            // Clear the authentication cookie
+            FormsAuthentication.SignOut();
+
+            // Redirect the user to the login form
+            SignIn signInForm = new SignIn();
+            signInForm.Show();
+            this.Hide();
+        }
+    }
+}
