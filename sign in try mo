@@ -28,7 +28,7 @@ namespace InventoryManagementSystem
 
             try
             {
-                // Authenticate the user using the UserManager class
+                // Replace this with your own sign in logic
                 if (UserManager.AuthenticateUser(username, password))
                 {
                     MessageBox.Show("Sign in successful!", "Information Message", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -49,6 +49,12 @@ namespace InventoryManagementSystem
         private void btnCancel_Click(object sender, EventArgs e)
         {
             this.Close();
+        }
+
+        private void txtPassword_MouseDown(object sender, MouseEventArgs e)
+        {
+            _passwordVisible = !_passwordVisible;
+            txtPassword.UseSystemPasswordChar = !_passwordVisible;
         }
     }
 }
