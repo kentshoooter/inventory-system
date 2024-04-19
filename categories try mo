@@ -1,0 +1,79 @@
+using System;
+using System.Windows.Forms;
+
+namespace InventoryManagementSystem
+{
+    public partial class InventoryForm : Form
+    {
+        private ProductManager productManager;
+
+        public InventoryForm()
+        {
+            InitializeComponent();
+
+            productManager = new ProductManager();
+
+            // Set the ListBox's DataSource to the list of products
+            lstInventory.DataSource = productManager.GetAllProducts();
+
+            // Set the ListBox's DisplayMember to the ProductName property
+            lstInventory.DisplayMember = "ProductName";
+
+            // Set the ListBox's ValueMember to the ProductID property
+            lstInventory.ValueMember = "ProductID";
+        }
+
+        private void btnAdd_Click(object sender, EventArgs e)
+        {
+            // Get the product details from the text boxes
+            string productID = txtProductID.Text;
+            string productName = txtProductName.Text;
+            string category = txtCategory.Text;
+            decimal price = decimal.Parse(txtPrice.Text);
+            int stocks = int.Parse(txtStocks.Text);
+            string status = txtStatus.Text;
+
+            // Create a new product object
+            Product newProduct = new Product(productID, productName, category, price, stocks, status);
+
+            // Add the new product to the list of products
+            productManager.AddProduct(newProduct);
+
+            // Update the ListBox with the new list of products
+            lstInventory.DataSource = null;
+            lstInventory.DataSource = productManager.GetAllProducts();
+
+            // Clear the text boxes
+            txtProductID.Clear();
+            txtProductName.Clear();
+            txtCategory.Clear();
+            txtPrice.Clear();
+            txtStocks.Clear();
+            txtStatus.Clear();
+        }
+
+        private void btnRemove_Click(object sender, EventArgs e)
+        {
+            // Get the selected product from the ListBox
+            Product selectedProduct = (Product)lstInventory.SelectedItem;
+
+            // Remove the selected product from the list of products
+            productManager.RemoveProduct(selectedProduct);
+
+            // Update the ListBox with the new list of products
+            lstInventory.DataSource = null;
+            lstInventory.DataSource = productManager.GetAllProducts();
+        }
+    }
+}
+
+
+public void AddProduct(Product product)
+{
+    products.Add(product);
+}
+
+public void RemoveProduct(Product product)
+{
+    products.Remove(product);
+}
