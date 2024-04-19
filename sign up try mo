@@ -1,58 +1,67 @@
-using System;
-using System.Windows.Forms;
-
-namespace InventoryManagementSystem
-{
-    public partial class SignUp : Form
+    public SignUp()
     {
-        public SignUp()
+        InitializeComponent();
+
+        _passwordVisible = false;
+        txtPassword.UseSystemPasswordChar = true;
+        txtConfirmPassword.UseSystemPasswordChar = true;
+    }
+
+    private void close_Click(object sender, EventArgs e)
+    {
+        Application.Exit();
+    }
+
+    private void btnSignUp_Click(object sender, EventArgs e)
+    {
+        string username = txtUsername.Text;
+        string password = txtPassword.Text;
+        string confirmPassword = txtConfirmPassword.Text;
+
+        if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password) || string.IsNullOrWhiteSpace(confirmPassword))
         {
-            InitializeComponent();
+            MessageBox.Show("Username, password, and confirm password are required.", "Error Message", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            return;
         }
 
-        private void close_Click(object sender, EventArgs e)
+        if (password != confirmPassword)
         {
-            Application.Exit();
+            MessageBox.Show("The passwords do not match.", "Error Message", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            return;
         }
 
-        private void btnSignUp_Click(object sender, EventArgs e)
+        try
         {
-            string username = txtUsername.Text;
-            string password = txtPassword.Text;
-            string confirmPassword = txtConfirmPassword.Text;
+            // Replace this with your own sign up logic
+            UserManager.SaveUser(username, password);
 
-            if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password) || string.IsNullOrWhiteSpace(confirmPassword))
-            {
-                MessageBox.Show("Username, password, and confirm password are required.", "Error Message", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
+            MessageBox.Show("Sign up successful!", "Information Message", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-            if (password != confirmPassword)
-            {
-                MessageBox.Show("The passwords do not match.", "Error Message", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-
-            try
-            {
-                // Replace this with your own sign up logic
-                UserManager.SaveUser(username, password);
-
-                MessageBox.Show("Sign up successful!", "Information Message", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-                SignIn signInForm = new SignIn();
-                signInForm.Show();
-                this.Hide();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Sign up failed: " + ex.Message, "Error Message", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+            SignIn signInForm = new SignIn();
+            signInForm.Show();
+            this.Hide();
         }
-
-        private void btnCancel_Click(object sender, EventArgs e)
+        catch (Exception ex)
         {
-            this.Close();
+            MessageBox.Show("Sign up failed: " + ex.Message, "Error Message", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
     }
+
+    private void btnCancel_Click(object sender, EventArgs e)
+    {
+        this.Close();
+    }
+
+    private void txtPassword_MouseDown(object sender, MouseEventArgs e)
+    {
+        _passwordVisible = !_passwordVisible;
+        txtPassword.UseSystemPasswordChar = !_passwordVisible;
+    }
+
+    private void txtConfirmPassword_MouseDown(object sender, MouseEventArgs e)
+    {
+        _passwordVisible = !_passwordVisible;
+        txtConfirmPassword.UseSystemPasswordChar = !_passwordVisible;
+    }
 }
+
