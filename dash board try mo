@@ -1,0 +1,35 @@
+using System;
+using System.Windows.Forms;
+
+namespace InventoryManagementSystem
+{
+    public partial class Dashboard : Form
+    {
+        public Dashboard()
+        {
+            InitializeComponent();
+        }
+
+        private void btnLogout_Click(object sender, EventArgs e)
+        {
+            SignIn signInForm = new SignIn();
+            signInForm.Show();
+            this.Hide();
+        }
+
+        private void btnViewProducts_Click(object sender, EventArgs e)
+        {
+            // Code to view products
+        }
+
+        private void btnAddProduct_Click(object sender, EventArgs e)
+        {
+            // Code to add products
+        }
+
+        private void btnEditProduct_Click(object sender, EventArgs e)
+        {
+            // Code to edit products
+        }
+
+        private void btnDeleteProduct_Click(object sender, EventArgs e)
