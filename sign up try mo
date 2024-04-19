@@ -19,10 +19,17 @@ namespace InventoryManagementSystem
         {
             string username = txtUsername.Text;
             string password = txtPassword.Text;
+            string confirmPassword = txtConfirmPassword.Text;
 
-            if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password))
+            if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password) || string.IsNullOrWhiteSpace(confirmPassword))
             {
-                MessageBox.Show("Username and password are required.", "Error Message", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Username, password, and confirm password are required.", "Error Message", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            if (password != confirmPassword)
+            {
+                MessageBox.Show("The passwords do not match.", "Error Message", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
@@ -49,42 +56,3 @@ namespace InventoryManagementSystem
         }
     }
 }
-
-using System;
-using System.Security.Cryptography;
-using System.Text;
-
-namespace InventoryManagementSystem
-{
-    public static class UserManager
-    {
-        private const string PasswordSalt = "mysecretkey";
-
-        public static void SaveUser(string username, string password)
-        {
-            string encryptedPassword = GetEncryptedPassword(password);
-
-            // Here you can add code to save the username and encrypted password
-            // to a secure storage location (such as a database or encrypted file)
-        }
-
-        public static bool AuthenticateUser(string username, string password)
-        {
-            string savedUsername = "user";
-            string savedPassword = GetEncryptedPassword("password");
-
-            return username == savedUsername && password == savedPassword;
-        }
-
-        private static string GetEncryptedPassword(string password)
-        {
-            using (SHA256 sha256 = SHA256.Create())
-            {
-                byte[] saltBytes = Encoding.UTF8.GetBytes(PasswordSalt);
-                byte[] passwordBytes = Encoding.UTF8.GetBytes(password);
-
-                byte[] saltedPasswordBytes = new byte[saltBytes.Length + passwordBytes.Length];
-                Array.Copy(saltBytes, saltedPasswordBytes, saltBytes.Length);
-                Array.Copy(passwordBytes, 0, saltedPasswordBytes, saltBytes.Length, passwordBytes.Length);
-
-                byte[] encryptedPasswordBytes = sha2
